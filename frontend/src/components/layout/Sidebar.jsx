@@ -74,8 +74,9 @@ export default function Sidebar({ isOpen, onClose }) {
           {chats.length > 0 && (
             <button
               onClick={clearAllChats}
-              className="text-[11px] text-destructive hover:underline px-1"
+              className="flex items-center justify-center gap-2 w-full text-sm font-medium text-destructive border border-destructive/30 rounded-lg py-2 mt-2 hover:bg-destructive/10 transition-colors"
             >
+              <Trash2 size={16} />
               Clear history
             </button>
           )}
