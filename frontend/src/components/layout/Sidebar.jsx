@@ -1,8 +1,22 @@
-import { Plus, MessageSquare, History, X, Sparkles } from "lucide-react";
+import {
+  Plus,
+  MessageSquare,
+  History,
+  X,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
 import { useChatStore } from "../../store/chatStore";
 
 export default function Sidebar({ isOpen, onClose }) {
-  const { chats, createNewChat, setActiveChat, activeChatId } = useChatStore();
+  const {
+    chats,
+    createNewChat,
+    setActiveChat,
+    activeChatId,
+    deleteChat,
+    clearAllChats,
+  } = useChatStore();
 
   return (
     <>
@@ -57,6 +71,14 @@ export default function Sidebar({ isOpen, onClose }) {
         <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-4 px-1">
           <History size={12} />
           Recent Conversations
+          {chats.length > 0 && (
+            <button
+              onClick={clearAllChats}
+              className="text-[11px] text-destructive hover:underline mb-2 px-1"
+            >
+              Clear all history
+            </button>
+          )}
         </div>
 
         {/* Chat List Area */}
@@ -72,20 +94,31 @@ export default function Sidebar({ isOpen, onClose }) {
             </div>
           ) : (
             chats.map((chat) => (
-              <button
+              <div
                 key={chat.id}
-                onClick={() => {
-                  setActiveChat(chat.id);
-                  onClose?.();
-                }}
-                className={`w-full text-left p-3 rounded-lg text-sm truncate transition-colors ${
+                className={`group flex items-center justify-between w-full p-3 rounded-lg text-sm transition-colors ${
                   activeChatId === chat.id
                     ? "bg-secondary"
                     : "hover:bg-secondary/50"
                 }`}
               >
-                {chat.title}
-              </button>
+                <button
+                  onClick={() => {
+                    setActiveChat(chat.id);
+                    onClose?.();
+                  }}
+                  className="flex-1 text-left truncate"
+                >
+                  {chat.title}
+                </button>
+
+                <button
+                  onClick={() => deleteChat(chat.id)}
+                  className="opacity-0 group-hover:opacity-100 p-1 hover:bg-destructive/10 rounded transition"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
             ))
           )}
         </div>

@@ -39,6 +39,26 @@ export const useChatStore = create(
             activeChatId: newChat.id,
           };
         }),
+      deleteChat: (chatId) =>
+        set((state) => {
+          const filteredChats = state.chats.filter(
+            (chat) => chat.id !== chatId,
+          );
+
+          return {
+            chats: filteredChats,
+            activeChatId:
+              state.activeChatId === chatId
+                ? filteredChats[0]?.id || null
+                : state.activeChatId,
+          };
+        }),
+
+      clearAllChats: () =>
+        set({
+          chats: [],
+          activeChatId: null,
+        }),
 
       setActiveChat: (id) =>
         set({
@@ -70,6 +90,7 @@ export const useChatStore = create(
           }),
         })),
     }),
+
     {
       name: "maarghaai-storage",
       onRehydrateStorage: () => (state) => {
