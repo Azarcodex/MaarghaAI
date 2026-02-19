@@ -27,7 +27,7 @@ export async function generateReply(message) {
         return fallback.text;
       } catch (fallbackError) {
         console.error("Fallback model error:", fallbackError);
-        return "Your daily free quota is over. Please try again tomorrow.";
+        return "Agent free quota is over. Please try again later.";
       }
     }
 
