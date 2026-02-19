@@ -70,7 +70,7 @@ export default function Sidebar({ isOpen, onClose }) {
         {/* Navigation / History Label */}
         <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-4 px-1">
           <History size={12} />
-          Recent Conversations
+          History
           {chats.length > 0 && (
             <button
               onClick={clearAllChats}
