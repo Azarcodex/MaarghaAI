@@ -152,9 +152,9 @@ export default function Sidebar({ isOpen, onClose }) {
               <span className="text-xs font-semibold truncate">
                 Guest Account
               </span>
-              <span className="text-[9px] text-muted-foreground uppercase">
+              {/* <span className="text-[9px] text-muted-foreground uppercase">
                 Pro Version →
-              </span>
+              </span> */}
             </div>
           </div>
           <button className="p-3 hover:bg-secondary rounded-xl transition-colors text-muted-foreground hover:text-foreground border border-transparent hover:border-border/50">
