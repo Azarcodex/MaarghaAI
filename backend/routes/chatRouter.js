@@ -1,5 +1,5 @@
 import express from "express";
-import { generateReply } from "../services/geminiService.js";
+import { generateReply } from "../services/grokService.js";
 
 const router = express.Router();
 
