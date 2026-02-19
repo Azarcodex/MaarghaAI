@@ -68,16 +68,20 @@ export default function Sidebar({ isOpen, onClose }) {
         </button>
 
         {/* Navigation / History Label */}
-        <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-4 px-1">
-          <History size={12} />
-          History
+        {/* Navigation / History Label */}
+        <div className="flex items-center justify-between mb-3 px-1">
+          <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
+            <History size={12} />
+            History
+          </div>
+
           {chats.length > 0 && (
             <button
               onClick={clearAllChats}
-              className="flex items-center justify-center gap-2 w-full text-sm font-small text-destructive border border-destructive/30 rounded-lg py-1 mt-2 hover:bg-destructive/10 transition-colors"
+              className="flex items-center gap-1 text-[11px] text-destructive hover:underline transition"
             >
-              <Trash2 size={16} />
-              Clear history
+              <Trash2 size={12} />
+              Clear
             </button>
           )}
         </div>
