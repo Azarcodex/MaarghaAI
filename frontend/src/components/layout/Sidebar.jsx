@@ -1,26 +1,29 @@
 import {
   Plus,
   MessageSquare,
-  Search,
+  History,
   X,
   Sparkles,
   Trash2,
-  Settings,
-  Calendar,
 } from "lucide-react";
 import { useChatStore } from "../../store/chatStore";
-import { useState } from "react";
 
 export default function Sidebar({ isOpen, onClose }) {
-  const { chats, createNewChat, setActiveChat, activeChatId, deleteChat } =
-    useChatStore();
-  const [searchOpen, setSearchOpen] = useState(false);
+  const {
+    chats,
+    createNewChat,
+    setActiveChat,
+    activeChatId,
+    deleteChat,
+    clearAllChats,
+  } = useChatStore();
 
   return (
     <>
+      {/* Overlay: Using a softer blur instead of just a dark tint */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-background/80 backdrop-blur-md z-40 lg:hidden transition-all duration-300"
+          className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40 lg:hidden transition-opacity"
           onClick={onClose}
         />
       )}
@@ -28,112 +31,90 @@ export default function Sidebar({ isOpen, onClose }) {
       <aside
         className={`
           fixed z-50 inset-y-0 left-0 w-72
-          bg-card border-r border-border/40 p-5
-          transform transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1)
+          bg-card border-r border-border/50 p-6
+          transform transition-all duration-300 ease-in-out
           ${isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"}
           lg:translate-x-0 lg:static lg:shadow-none
           flex flex-col
         `}
       >
-        {/* Logo Section */}
-        <div className="flex items-center justify-between mb-8 px-2">
-          <div className="flex items-center gap-2.5 group cursor-pointer">
-            <div className="bg-primary/10 p-2 rounded-xl group-hover:bg-primary/20 transition-colors">
-              <Sparkles size={20} className="text-primary" />
+        {/* Logo & Mobile Close */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-2 group cursor-pointer">
+            <div className="bg-primary p-1.5 rounded-lg rotate-3 group-hover:rotate-0 transition-transform">
+              <Sparkles size={18} className="text-primary-foreground" />
             </div>
-            <span className="text-lg font-bold tracking-tight">MaarghaAI</span>
+            <span className="text-xl font-bold tracking-tight">MaarghaAI</span>
           </div>
+
           <button
             onClick={onClose}
-            className="lg:hidden p-2 hover:bg-secondary rounded-full transition-colors"
+            className="lg:hidden p-1 hover:bg-secondary rounded-md"
           >
-            <X size={18} />
+            <X size={20} />
           </button>
         </div>
 
-        {/* Action Button */}
+        {/* New Chat Action: The "Hero" Button */}
         <button
           onClick={() => {
             createNewChat();
-            onClose?.();
+            onClose?.(); // safely close sidebar
           }}
-          className="group flex items-center justify-center gap-2 w-full bg-foreground text-background font-semibold rounded-2xl py-3 px-4 hover:opacity-90 active:scale-95 transition-all mb-6 shadow-md"
+          className="flex items-center justify-center gap-2 w-full bg-foreground text-background font-medium rounded-xl py-3 px-4 hover:opacity-90 active:scale-[0.98] transition-all mb-8 shadow-sm"
         >
-          <Plus
-            size={18}
-            strokeWidth={3}
-            className="group-hover:rotate-90 transition-transform duration-300"
-          />
+          <Plus size={18} strokeWidth={2.5} />
           New Chat
         </button>
 
-        {/* Header with Search Toggle */}
-        <div className="flex items-center justify-between mb-4 px-2">
-          {searchOpen ? (
-            <div className="flex items-center w-full bg-secondary/50 rounded-lg px-2 py-1 transition-all">
-              <Search size={14} className="text-muted-foreground ml-1" />
-              <input
-                autoFocus
-                placeholder="Find chat..."
-                className="bg-transparent border-none focus:ring-0 text-xs w-full py-1 px-2"
-                onBlur={() => setSearchOpen(false)}
-              />
-            </div>
-          ) : (
-            <>
-              <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.15em]">
-                <Calendar size={12} />
-                Recent
-              </div>
-              <button
-                onClick={() => setSearchOpen(true)}
-                className="p-1.5 hover:bg-secondary rounded-lg text-muted-foreground transition-colors"
-              >
-                <Search size={14} />
-              </button>
-            </>
+        {/* Navigation / History Label */}
+        <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-4 px-1">
+          <History size={12} />
+          Recent Conversations
+          {chats.length > 0 && (
+            <button
+              onClick={clearAllChats}
+              className="text-[11px] text-destructive hover:underline mb-2 px-1"
+            >
+              Clear all history
+            </button>
           )}
         </div>
 
-        {/* Chat List */}
-        <div className="flex-1 overflow-y-auto space-y-1 -mx-2 px-2 scrollbar-hide">
+        {/* Chat List Area */}
+        <div className="flex-1 overflow-y-auto space-y-1 -mx-2 px-2">
           {chats.length === 0 ? (
-            <div className="py-12 text-center opacity-40">
-              <MessageSquare size={24} className="mx-auto mb-2" />
-              <p className="text-xs italic">No threads yet</p>
+            <div className="py-10 text-center space-y-2">
+              <div className="bg-secondary/30 w-10 h-10 rounded-full flex items-center justify-center mx-auto opacity-50">
+                <MessageSquare size={16} />
+              </div>
+              <p className="text-xs text-muted-foreground italic px-4">
+                Your chat history will appear here.
+              </p>
             </div>
           ) : (
             chats.map((chat) => (
               <div
                 key={chat.id}
-                className={`group flex items-center gap-3 w-full rounded-xl text-sm transition-all duration-200 px-3 py-2.5 ${
+                className={`group flex items-center justify-between w-full p-3 rounded-lg text-sm transition-colors ${
                   activeChatId === chat.id
-                    ? "bg-secondary text-foreground"
-                    : "text-muted-foreground hover:bg-secondary/40 hover:text-foreground"
+                    ? "bg-secondary"
+                    : "hover:bg-secondary/50"
                 }`}
               >
-                <MessageSquare
-                  size={16}
-                  className={
-                    activeChatId === chat.id ? "text-primary" : "opacity-50"
-                  }
-                />
                 <button
                   onClick={() => {
                     setActiveChat(chat.id);
                     onClose?.();
                   }}
-                  className="flex-1 text-left truncate font-medium"
+                  className="flex-1 text-left truncate"
                 >
                   {chat.title}
                 </button>
+
                 <button
                   onClick={() => deleteChat(chat.id)}
-                  className={`p-1 hover:text-destructive transition-opacity ${
-                    activeChatId === chat.id
-                      ? "opacity-100"
-                      : "opacity-0 group-hover:opacity-100"
-                  }`}
+                  className="opacity-0 group-hover:opacity-100 p-1 hover:bg-destructive/10 rounded transition"
                 >
                   <Trash2 size={14} />
                 </button>
@@ -142,24 +123,17 @@ export default function Sidebar({ isOpen, onClose }) {
           )}
         </div>
 
-        {/* User & Settings Footer */}
-        <div className="mt-auto pt-4 flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-3 p-2 rounded-xl bg-secondary/30 border border-border/20">
-            <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center font-bold text-primary text-xs">
-              GU
-            </div>
+        {/* Footer Sidebar Area (Settings, Profile, etc.) */}
+        <div className="pt-4 border-t border-border/50">
+          <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-secondary/50 cursor-pointer transition-colors">
+            <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-primary to-blue-400" />
             <div className="flex flex-col min-w-0">
-              <span className="text-xs font-semibold truncate">
-                Guest Account
+              <span className="text-sm font-medium truncate">Guest User</span>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-tighter">
+                Free Plan
               </span>
-              {/* <span className="text-[9px] text-muted-foreground uppercase">
-                Pro Version →
-              </span> */}
             </div>
           </div>
-          <button className="p-3 hover:bg-secondary rounded-xl transition-colors text-muted-foreground hover:text-foreground border border-transparent hover:border-border/50">
-            <Settings size={18} />
-          </button>
         </div>
       </aside>
     </>
