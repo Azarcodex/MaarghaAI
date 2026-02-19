@@ -1,46 +1,127 @@
 @import "tailwindcss";
 
 @theme {
-  /*fonts*/
-  --font-sans: "Inter", sans-serif;
-  --font-heading: "Poppins", sans-serif;
+  /* Fonts */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-heading: "Outfit", sans-serif;
 
-  /* Backgrounds */
-  --color-bg: #ffffff;
-  --color-surface: #f9fafb;
+  /* Colors - Light Mode (Default) */
+  --color-background: #ffffff;
+  --color-foreground: #020617;
+  --color-card: #f8fafc;
+  --color-card-foreground: #020617;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #020617;
+  --color-primary: #2563eb;
+  --color-primary-foreground: #f8fafc;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #0f172a;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #f1f5f9;
+  --color-accent-foreground: #0f172a;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #2563eb;
 
-  /* Text */
-  --color-text: #111827;
-  --color-text-muted: #6b7280;
+  /* Additional UI Tokens */
+  --radius-xl: 1rem;
+  --radius-lg: 0.75rem;
+  --radius-md: 0.5rem;
+  --radius-sm: 0.25rem;
 
-  /* Borders */
-  --color-border: #e5e7eb;
-
-  /* Brand */
-  --color-primary: #111827;
-  --color-primary-foreground: #ffffff;
+  --ease-spring: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/*dark theme*/
 @layer base {
   .dark {
-    --color-bg: #0f172a;
-    --color-surface: #111827;
-
-    --color-text: #f9fafb;
-    --color-text-muted: #9ca3af;
-
-    --color-border: #1f2933;
-
-    --color-primary: #f9fafb;
-    --color-primary-foreground: #111827;
+    --color-background: #020617;
+    --color-foreground: #f8fafc;
+    --color-card: #0f172a;
+    --color-card-foreground: #f8fafc;
+    --color-popover: #020617;
+    --color-popover-foreground: #f8fafc;
+    --color-primary: #3b82f6;
+    --color-primary-foreground: #0f172a;
+    --color-secondary: #1e293b;
+    --color-secondary-foreground: #f8fafc;
+    --color-muted: #1e293b;
+    --color-muted-foreground: #94a3b8;
+    --color-accent: #1e293b;
+    --color-accent-foreground: #f8fafc;
+    --color-destructive: #7f1d1d;
+    --color-destructive-foreground: #f8fafc;
+    --color-border: #1e293b;
+    --color-input: #1e293b;
+    --color-ring: #3b82f6;
   }
 }
 
 @layer base {
   body {
-    font-family: var(--font-sans);
-    background-color: var(--color-bg);
-    color: var(--color-text);
+    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/20;
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading font-black tracking-tighter;
+  }
+}
+
+/* Scrollbar Polish */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/10 rounded-full hover:bg-muted-foreground/30 transition-colors;
+}
+
+/* Glassmorphism */
+.glass {
+  @apply bg-background/60 backdrop-blur-xl border border-border/40;
+}
+
+.white-glass {
+  @apply bg-white/5 backdrop-blur-md border border-white/10;
+}
+
+.dark .white-glass {
+  @apply bg-white/2 backdrop-blur-md border border-white/5;
+}
+
+/* Animations */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Markdown prose overrides */
+.prose pre {
+  @apply bg-muted/30 border border-border/40 !my-4;
+}
+
+.prose code {
+  @apply bg-muted/50 px-1.5 py-0.5 rounded-md text-primary font-bold before:content-none after:content-none;
 }
