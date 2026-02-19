@@ -6,6 +6,7 @@ const ai = new GoogleGenAI({
 
 export async function generateReply(message) {
   try {
+    // Try primary model
     const response = await ai.models.generateContent({
       model: "gemini-2.5-pro",
       contents: message,
@@ -13,14 +14,24 @@ export async function generateReply(message) {
 
     return response.text;
   } catch (error) {
-    // Handle quota errors
+    console.error("Primary model error:", error);
+
+    // If quota or rate limit error, try fallback
     if (error.status === 429) {
-      return "Your daily free quota is over. Please try again tomorrow.";
+      try {
+        const fallback = await ai.models.generateContent({
+          model: "gemini-2-flash",
+          contents: message,
+        });
+
+        return fallback.text;
+      } catch (fallbackError) {
+        console.error("Fallback model error:", fallbackError);
+        return "Your daily free quota is over. Please try again tomorrow.";
+      }
     }
 
-    // Log other errors for debugging
-    console.error("Gemini error:", error);
-
+    // Other errors
     return "Something went wrong. Please try again later.";
   }
 }
